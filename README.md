@@ -1,6 +1,6 @@
 # Game "Don't Annoy The Dancer"
 
-Some commands below to play my game
+This is my first game using PyGame and Pygbag. The main sense of the game is turning on and off music and changing songs, while the dancer on the screen reacts on your moves. Enjoy!
 
 ### deploy virtual environment
 
