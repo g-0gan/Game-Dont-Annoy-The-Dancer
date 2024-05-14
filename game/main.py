@@ -1,5 +1,7 @@
 """
-This is my first simple game that based on pygame.`
+This is my first simple game that based on pygame and pygbag.
+There are A and D keys(changing songs) and Spacebar(stop and play music)
+When the music doesn't play dancer stops, and you have made him angry!
 """
 import asyncio
 import sys
@@ -24,7 +26,7 @@ async def main():
     screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
 
-    background = pygame.image.load(CURRENT_FOLDER / 'Pictures' / 'dance_floor.jpg')
+    background = pygame.image.load(CURRENT_FOLDER / 'pictures' / 'dance_floor.jpg')
     screen.blit(background, (0, 0))
     pygame.display.update()
 
@@ -33,7 +35,9 @@ async def main():
 
     if pygame.font:
         font = pygame.font.Font(None, 50)
-        text = font.render("Attention! This guy loves dancing, don't you dare turn off the music!", True, (252, 3, 3))
+        text = font.render("Attention! This guy loves dancing, don't you dare turn off the music!",
+                           True,
+                           (252, 3, 3))
         textpos = text.get_rect(centerx=background.get_width() / 2, y=10)
         background.blit(text, textpos)
 
@@ -54,16 +58,16 @@ async def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a:  # following moves after user pressed A key
                     music_player.previous_song()
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d:  # following moves after user pressed K key
                     music_player.next_song()
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:  # following moves after user pressed SPACEBAR
                     if pygame.mixer.music.get_busy():
                         music_player.stop_music()
                     else:
                         music_player.play_music()
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE:  # following moves after user pressed ESC key
                     pygame.quit()
                     sys.exit()
         all_sprites.update()
