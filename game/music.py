@@ -2,12 +2,15 @@ from pathlib import Path
 
 import pygame
 
+from constants import music_constants
+
 CURRENT_FOLDER = Path(__file__).parent
 
 
 class MusicPlayer:
     """
-   Class MusicPlayer is required for interaction with songs: loading, changing, stopping and playing
+   Class MusicPlayer is required for interaction with songs:
+    loading, changing, stopping and playing
     """
     def __init__(self, song_list):
         pygame.mixer.init()
@@ -19,7 +22,10 @@ class MusicPlayer:
         """
         The function that loads songs from particular folder
         """
-        pygame.mixer.music.load(CURRENT_FOLDER / 'songs' / self.song_list[self.song_index])
+        pygame.mixer.music.load(
+            CURRENT_FOLDER /
+            'songs' /
+            self.song_list[self.song_index])
 
     def play_music(self):
         """
@@ -47,10 +53,13 @@ class MusicPlayer:
 
     def play_from_position(self):
         """
-        The function that plays the song from the remembered position
+        The function that plays the song
+        from the remembered position
         """
         if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.play(start=self.pos / 1000.0)
+            pygame.mixer.music.play(
+                start=self.pos / music_constants['MILLISECONDS_CONVERTER']
+            )
 
     def next_song(self):
         """

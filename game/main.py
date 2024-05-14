@@ -9,75 +9,78 @@ from pathlib import Path
 
 import pygame
 
+from constants import main_constants
 from dancing_guy import Dancer
 from music import MusicPlayer
 
-FPS = 45
-SCREEN_SIZE = (1280, 720)
-
 CURRENT_FOLDER = Path(__file__).parent
-SONGS = ['1st_song.mp3', '2nd_song.mp3', '3rd_song.mp3']
-
-music_player = MusicPlayer(SONGS)
+MUSIC_PLAYER = MusicPlayer(main_constants['SONGS'])
+key_actions = {
+    pygame.K_a: MUSIC_PLAYER.previous_song,
+    pygame.K_d: MUSIC_PLAYER.next_song,
+    pygame.K_ESCAPE: sys.exit
+}
 
 
 async def main():
     pygame.init()
-    screen: pygame.Surface = pygame.display.set_mode(SCREEN_SIZE)
+    screen: pygame.Surface = (pygame.display.set_mode
+                              (main_constants['SCREEN_SIZE']))
     clock = pygame.time.Clock()
 
-    background = pygame.image.load(CURRENT_FOLDER / 'pictures' / 'dance_floor.jpg')
-    screen.blit(background, (0, 0))
-    pygame.display.update()
-
-    dancer = Dancer()  # Sprite: Surface, Rectangle
+    pygame.mixer.init()
+    MUSIC_PLAYER.play_music()
+    dancer = Dancer()
     all_sprites = pygame.sprite.RenderPlain(dancer)
 
+    background = pygame.image.load(
+        CURRENT_FOLDER /
+        'pictures' /
+        'dance_floor.jpg')
+    screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
+    pygame.display.update()
+
     if pygame.font:
-        font = pygame.font.Font(None, 50)
-        text = font.render("Attention! This guy loves dancing, don't you dare turn off the music!",
-                           True,
-                           (252, 3, 3))
-        textpos = text.get_rect(centerx=background.get_width() / 2, y=10)
+        font = pygame.font.Font(main_constants['FILE_PATH_FOR_TEXT'],
+                                main_constants['SIZE_UPPER_TEXT'])
+        text = font.render(main_constants['UPPER_TEXT'],
+                           main_constants['ANTIALIAS_FOR_TEXT'],
+                           main_constants['COLOR_UPPER_TEXT'])
+        textpos = text.get_rect(centerx=background.get_width() / 2,
+                                y=main_constants['Y_UPPER_TEXT_POS'])
         background.blit(text, textpos)
 
-        font = pygame.font.Font(None, 38)
+        font = pygame.font.Font(main_constants['FILE_PATH_FOR_TEXT'],
+                                main_constants['SIZE_LOWER_TEXT'])
         text = font.render(
-            "To change the music, use the A(<) and D(>) keys, and a little advice: DON'T TOUCH THE SPACEBAR!",
-            True,
-            (237, 79, 12))
-        textpos = text.get_rect(centerx=background.get_width() / 2, y=670)
+            main_constants['LOWER_TEXT'],
+            main_constants['ANTIALIAS_FOR_TEXT'],
+            main_constants['COLOR_LOWER_TEXT'])
+        textpos = text.get_rect(centerx=background.get_width() / 2,
+                                y=main_constants['Y_LOWER_TEXT_POS'])
         background.blit(text, textpos)
 
-    screen.blit(background, (0, 0))
     pygame.display.flip()
-
-    pygame.mixer.init()
-    music_player.play_music()
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:  # following moves after user pressed A key
-                    music_player.previous_song()
-                if event.key == pygame.K_d:  # following moves after user pressed K key
-                    music_player.next_song()
-                if event.key == pygame.K_SPACE:  # following moves after user pressed SPACEBAR
+                action = key_actions.get(event.key)
+                if action:
+                    action()
+                elif event.key == pygame.K_SPACE:
                     if pygame.mixer.music.get_busy():
-                        music_player.stop_music()
+                        MUSIC_PLAYER.stop_music()
                     else:
-                        music_player.play_music()
-                if event.key == pygame.K_ESCAPE:  # following moves after user pressed ESC key
-                    pygame.quit()
-                    sys.exit()
-        all_sprites.update()
+                        MUSIC_PLAYER.play_music()
 
-        screen.blit(background, (0, 0))
+        all_sprites.update()
+        screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
         all_sprites.draw(screen)
         pygame.display.flip()
 
-        clock.tick(FPS)
-        await asyncio.sleep(0)
+        clock.tick(main_constants['FPS'])
+        await asyncio.sleep(main_constants['ASYNCIO.SLEEP_DELAY'])
 
 
 if __name__ == '__main__':
