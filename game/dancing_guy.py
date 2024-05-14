@@ -9,8 +9,11 @@ class Dancer(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(CURRENT_FOLDER / 'Pictures' / 'happy_dancer.png')
+        self.original = self.image
         self.stop_image = pygame.image.load(CURRENT_FOLDER / 'Pictures' / 'angry_dancer.png')
-        self.mirrored_image = pygame.transform.flip(self.image, True, False)
+        self.mirrored_image_right = pygame.transform.flip(self.image, True, False)
+        self.mirrored_image_left = pygame.transform.flip(self.image, True, False)
+        self.previous_direction = 1
 
         self.rect = self.image.get_rect()
         self.x_speed = 7
@@ -27,20 +30,21 @@ class Dancer(pygame.sprite.Sprite):
         self.rect.centerx = self.scene.centerx
 
     def update(self):
-        image = self.image
-        speed = 8
-        self.rect.x += self.x_speed
+        image = pygame.image.load(CURRENT_FOLDER / 'Pictures' / 'happy_dancer.png')
         if pygame.mixer.music.get_busy():
-            self.image = image
-            self.x_speed = speed
-            if self.rect.right > self.scene.right:
-                self.rect.right = self.scene.right
+            if self.image == self.stop_image:
+                self.image = image
+            if self.x_speed == 0:
+                self.x_speed = 7 * self.previous_direction
+            if (self.rect.left <= self.scene.left) and (self.x_speed < 0):
+                self.previous_direction = 1
                 self.x_speed *= -1
-                self.image = self.mirrored_image
-            if self.rect.left < self.scene.left:
-                self.rect.left = self.scene.left
+                self.image = self.image = self.mirrored_image_left
+            elif (self.rect.right >= self.scene.right) and (self.x_speed > 0):
+                self.previous_direction = -1
                 self.x_speed *= -1
-                self.image = self.mirrored_image
+                self.image = self.mirrored_image_left
+            self.rect.x += self.x_speed
         else:
             self.image = self.stop_image
             self.x_speed = 0
