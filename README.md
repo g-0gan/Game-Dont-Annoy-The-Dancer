@@ -1,6 +1,6 @@
-# PYGAME+PYGBAG template
+# Game "Don't Annoy The Dancer"
 
-A working template to start coding. Just a colored screen and some infrastructure.
+Some commands below to play my game
 
 ### deploy virtual environment
 
