@@ -15,11 +15,22 @@ from music import MusicPlayer
 
 CURRENT_FOLDER = Path(__file__).parent
 MUSIC_PLAYER = MusicPlayer(main_constants['SONGS'])
-key_actions = {
+KEY_ACTIONS = {
     pygame.K_a: MUSIC_PLAYER.previous_song,
     pygame.K_d: MUSIC_PLAYER.next_song,
+    pygame.K_SPACE:
+        (lambda:
+         MUSIC_PLAYER.stop_music() if pygame.mixer.music.get_busy()
+         else MUSIC_PLAYER.play_music()),
     pygame.K_ESCAPE: sys.exit
 }
+
+
+def render_text(file_path, size, text, antialias, color, centerx, y):
+    font = pygame.font.Font(file_path, size)
+    rendered_text = font.render(text, antialias, color)
+    textpos = rendered_text.get_rect(centerx=centerx, y=y)
+    return rendered_text, textpos
 
 
 async def main():
@@ -41,23 +52,26 @@ async def main():
     pygame.display.update()
 
     if pygame.font:
-        font = pygame.font.Font(main_constants['FILE_PATH_FOR_TEXT'],
-                                main_constants['SIZE_UPPER_TEXT'])
-        text = font.render(main_constants['UPPER_TEXT'],
-                           main_constants['ANTIALIAS_FOR_TEXT'],
-                           main_constants['COLOR_UPPER_TEXT'])
-        textpos = text.get_rect(centerx=background.get_width() / 2,
-                                y=main_constants['Y_UPPER_TEXT_POS'])
+        text, textpos = render_text(
+            main_constants['FILE_PATH_FOR_TEXT'],
+            main_constants['SIZE_UPPER_TEXT'],
+            main_constants['UPPER_TEXT'],
+            main_constants['ANTIALIAS_FOR_TEXT'],
+            main_constants['COLOR_UPPER_TEXT'],
+            background.get_width() / 2,
+            main_constants['Y_UPPER_TEXT_POS']
+        )
         background.blit(text, textpos)
 
-        font = pygame.font.Font(main_constants['FILE_PATH_FOR_TEXT'],
-                                main_constants['SIZE_LOWER_TEXT'])
-        text = font.render(
+        text, textpos = render_text(
+            main_constants['FILE_PATH_FOR_TEXT'],
+            main_constants['SIZE_LOWER_TEXT'],
             main_constants['LOWER_TEXT'],
             main_constants['ANTIALIAS_FOR_TEXT'],
-            main_constants['COLOR_LOWER_TEXT'])
-        textpos = text.get_rect(centerx=background.get_width() / 2,
-                                y=main_constants['Y_LOWER_TEXT_POS'])
+            main_constants['COLOR_LOWER_TEXT'],
+            background.get_width() / 2,
+            main_constants['Y_LOWER_TEXT_POS']
+        )
         background.blit(text, textpos)
 
     pygame.display.flip()
@@ -65,14 +79,9 @@ async def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                action = key_actions.get(event.key)
+                action = KEY_ACTIONS.get(event.key)
                 if action:
                     action()
-                elif event.key == pygame.K_SPACE:
-                    if pygame.mixer.music.get_busy():
-                        MUSIC_PLAYER.stop_music()
-                    else:
-                        MUSIC_PLAYER.play_music()
 
         all_sprites.update()
         screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
@@ -81,7 +90,6 @@ async def main():
 
         clock.tick(main_constants['FPS'])
         await asyncio.sleep(main_constants['ASYNCIO.SLEEP_DELAY'])
-
 
 if __name__ == '__main__':
     asyncio.run(main())
