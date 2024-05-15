@@ -1,3 +1,8 @@
+from pathlib import Path
+
+common_constants = {'CURRENT_FOLDER': Path(__file__).parent,
+                    }
+
 main_constants = {
     'FPS': 45,
     'SCREEN_SIZE': (1280, 720),

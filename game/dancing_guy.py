@@ -1,21 +1,17 @@
-from pathlib import Path
-
 import pygame
 
-from constants import dancer_constants
-
-CURRENT_FOLDER = Path(__file__).parent
+from constants import dancer_constants, common_constants
 
 
 class Dancer(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(
-            CURRENT_FOLDER /
+            common_constants['CURRENT_FOLDER'] /
             'pictures' /
             'happy_dancer.png')
         self.stop_image = pygame.image.load(
-            CURRENT_FOLDER /
+            common_constants['CURRENT_FOLDER'] /
             'pictures' /
             'angry_dancer.png')
         self.mirrored_image_right = pygame.transform.flip(

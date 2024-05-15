@@ -1,10 +1,6 @@
-from pathlib import Path
-
 import pygame
 
-from constants import music_constants
-
-CURRENT_FOLDER = Path(__file__).parent
+from constants import music_constants, common_constants
 
 
 class MusicPlayer:
@@ -23,7 +19,7 @@ class MusicPlayer:
         The function that loads songs from particular folder
         """
         pygame.mixer.music.load(
-            CURRENT_FOLDER /
+            common_constants['CURRENT_FOLDER'] /
             'songs' /
             self.song_list[self.song_index])
 

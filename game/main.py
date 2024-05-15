@@ -5,15 +5,13 @@ When the music doesn't play dancer stops, and you have made him angry!
 """
 import asyncio
 import sys
-from pathlib import Path
 
 import pygame
 
-from constants import main_constants
+from constants import main_constants, common_constants
 from dancing_guy import Dancer
 from music import MusicPlayer
 
-CURRENT_FOLDER = Path(__file__).parent
 MUSIC_PLAYER = MusicPlayer(main_constants['SONGS'])
 KEY_ACTIONS = {
     pygame.K_a: MUSIC_PLAYER.previous_song,
@@ -45,7 +43,7 @@ async def main():
     all_sprites = pygame.sprite.RenderPlain(dancer)
 
     background = pygame.image.load(
-        CURRENT_FOLDER /
+        common_constants['CURRENT_FOLDER'] /
         'pictures' /
         'dance_floor.jpg')
     screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
