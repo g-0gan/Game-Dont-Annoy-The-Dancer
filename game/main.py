@@ -44,7 +44,6 @@ async def main():
 
     background = pygame.image.load(
         common_constants['CURRENT_FOLDER'] /
-        'pictures' /
         'dance_floor.jpg')
     screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
     pygame.display.update()

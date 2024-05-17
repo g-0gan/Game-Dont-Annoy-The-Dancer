@@ -20,7 +20,6 @@ class MusicPlayer:
         """
         pygame.mixer.music.load(
             common_constants['CURRENT_FOLDER'] /
-            'songs' /
             self.song_list[self.song_index])
 
     def play_music(self):
