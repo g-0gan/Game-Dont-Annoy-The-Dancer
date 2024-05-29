@@ -13,6 +13,7 @@ class MusicPlayer:
         self.song_list = song_list
         self.song_index = 0
         self.pos = 0
+        self.is_playing: bool = False
 
     def load_music(self):
         """
@@ -26,6 +27,7 @@ class MusicPlayer:
         """
         The function that plays current song
         """
+        self.is_playing = True
         self.load_music()
         if self.pos != 0:
             self.play_from_position()
@@ -36,6 +38,7 @@ class MusicPlayer:
         """
         The function that stops current song
         """
+        self.is_playing = False
         self.remember_position()
         pygame.mixer.music.stop()
 
@@ -43,7 +46,7 @@ class MusicPlayer:
         """
         The function remembers where the song stopped
         """
-        if pygame.mixer.music.get_busy():
+        if self.is_playing:
             self.pos = pygame.mixer.music.get_pos()
 
     def play_from_position(self):
@@ -51,7 +54,7 @@ class MusicPlayer:
         The function that plays the song
         from the remembered position
         """
-        if not pygame.mixer.music.get_busy():
+        if not self.is_playing:
             pygame.mixer.music.play(
                 start=self.pos / music_constants['MILLISECONDS_CONVERTER']
             )
@@ -73,3 +76,9 @@ class MusicPlayer:
         self.pos = 0
         self.load_music()
         self.play_music()
+
+    def tumbler_press(self):
+        if self.is_playing:
+            self.stop_music()
+        else:
+            self.play_music()
