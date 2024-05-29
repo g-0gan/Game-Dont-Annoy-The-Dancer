@@ -18,7 +18,6 @@ class Dancer(pygame.sprite.Sprite):
             False)
         self.mirrored_image_left = self.image
         self.previous_direction = 1
-        self.image_gen = self.image_generator()
 
         self.rect = self.image.get_rect()
         self.scene = pygame.display.get_surface().get_rect()
@@ -26,6 +25,8 @@ class Dancer(pygame.sprite.Sprite):
         self.rect.y = dancer_constants['Y_DANCER_POS']
         self.x_speed = dancer_constants['X_SPEED']
         self.rect.x = dancer_constants['X_DANCER_POS']
+
+        self.is_music_playing = True
 
     def image_generator(self):
         """
@@ -35,11 +36,10 @@ class Dancer(pygame.sprite.Sprite):
         if self.x_speed == 0:
             self.x_speed = (dancer_constants['X_SPEED']
                             * self.previous_direction)
-        while True:
-            if self.previous_direction == 1:
-                yield self.mirrored_image_left
-            else:
-                yield self.mirrored_image_right
+        if self.previous_direction == 1:
+            return self.mirrored_image_left
+        else:
+            return self.mirrored_image_right
 
     def mirror_image(self):
         """
@@ -61,9 +61,8 @@ class Dancer(pygame.sprite.Sprite):
         and depending on the state of music
         the dancer has speed(music plays) or not(no music)
         """
-        if pygame.mixer.music.get_busy():
-            self.image_gen = self.image_generator()
-            self.image = next(self.image_gen)
+        if self.is_music_playing:
+            self.image = self.image_generator()
             self.mirror_image()
             self.rect.x += self.x_speed
         else:

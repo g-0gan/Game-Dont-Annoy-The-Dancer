@@ -16,11 +16,8 @@ MUSIC_PLAYER = MusicPlayer(main_constants['SONGS'])
 KEY_ACTIONS = {
     pygame.K_a: MUSIC_PLAYER.previous_song,
     pygame.K_d: MUSIC_PLAYER.next_song,
-    pygame.K_SPACE:
-        (lambda:
-         MUSIC_PLAYER.stop_music() if pygame.mixer.music.get_busy()
-         else MUSIC_PLAYER.play_music()),
-    pygame.K_ESCAPE: sys.exit
+    pygame.K_SPACE: MUSIC_PLAYER.tumbler_press,
+    pygame.K_ESCAPE: sys.exit,
 }
 
 
@@ -75,11 +72,12 @@ async def main():
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYUP:
                 action = KEY_ACTIONS.get(event.key)
                 if action:
                     action()
 
+        dancer.is_music_playing = MUSIC_PLAYER.is_playing
         all_sprites.update()
         screen.blit(background, main_constants['BACKGROUND_COORDINATES'])
         all_sprites.draw(screen)
